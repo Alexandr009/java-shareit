@@ -2,8 +2,8 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
-import ru.practicum.shareit.user.User;
 
 /**
  * TODO Sprint add-controllers.
@@ -12,10 +12,10 @@ import ru.practicum.shareit.user.User;
 @Setter
 @Getter
 @Data
-public class ItemDto {
-    Integer id;
+public class ItemCreateDto {
+    @NonNull
     String name;
     String description;
-    String available;
-    User user;
+    Boolean available;
+    Long userId;
 }

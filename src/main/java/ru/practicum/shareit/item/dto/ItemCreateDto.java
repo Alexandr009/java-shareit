@@ -1,21 +1,23 @@
 package ru.practicum.shareit.item.dto;
 
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-/**
- * TODO Sprint add-controllers.
- */
-
-@Setter
-@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class ItemCreateDto {
-    @NonNull
+
+    @NotNull(groups = {ru.practicum.shareit.item.dto.Create.class})
     String name;
+
+    @NotNull(groups = {ru.practicum.shareit.item.dto.Create.class})
     String description;
+
+    @NotNull(groups = {ru.practicum.shareit.item.dto.Create.class})
     Boolean available;
     Long userId;
+    Integer id;
 }

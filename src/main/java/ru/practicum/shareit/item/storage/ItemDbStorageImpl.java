@@ -1,61 +1,87 @@
 package ru.practicum.shareit.item.storage;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.item.mapper.ItemRowMapper;
+import ru.practicum.shareit.item.dto.ItemCreateDto;
+import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component("ItemDbStorageImpl")
 @Slf4j
 @Repository
 public class ItemDbStorageImpl implements ItemStorage {
 
-    private final JdbcTemplate jdbc;
-    private final ItemRowMapper mapper;
+    public HashMap<Integer, Item> itemMap = new HashMap<>();
 
-    @Autowired
-    public ItemDbStorageImpl(JdbcTemplate jdbc, ItemRowMapper mapper) {
-        this.jdbc = jdbc;
-        this.mapper = mapper;
+    public ItemDbStorageImpl() {
+        this.itemMap = new HashMap<>();
     }
-    /*
-        Integer id;
-        String name;
-        String description;
-        String available;
-        User user;
-        ItemRequest request;
- */
+
+
+    @Override
+    public Collection<Item> getAllByUserId(long userId) {
+        Collection<Item> result = itemMap.values().stream().filter(item -> item.getUser().getId() == userId).collect(Collectors.toList());
+        return result;
+    }
+
+    @Override
+    public Collection<Item> getAllByText(long userId, String text) {
+        Collection<Item> result = itemMap.values().stream()
+                .filter(item -> item.getUser().getId() == userId)
+                .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase()) ||
+                        item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                .filter(item -> item.getAvailable().toString().contains("true"))
+                .collect(Collectors.toList());
+        return result;
+    }
 
     @Override
     public Collection<Item> getAll() {
-        String query = "SELECT * FROM item";
-        Collection<Item> item = jdbc.query(query, mapper);
-        return item;
+        return itemMap.values();
     }
 
     @Override
-    public Item creat(Item item) {
-        String sql = "INSERT INTO item (name, description) " + "VALUES (?, ?)";
-        jdbc.update(sql, item.getName(), item.getDescription());
-        String query = "SELECT * FROM item WHERE name = ? and description = ?";
-        return jdbc.queryForObject(query,mapper,item.getName(), item.getDescription());
+    public Item creat(ItemCreateDto item, User user) {
+        Item itemNew = new Item();
+        itemNew.setName(item.getName());
+        itemNew.setDescription(item.getDescription());
+        itemNew.setAvailable(String.valueOf(item.getAvailable()));
+        itemNew.setId(item.getId());
+        itemNew.setUser(user);
+        itemMap.put(item.getId(), itemNew);
+        Item newItem = itemMap.get(item.getId());
+        return newItem;
     }
 
     @Override
-    public Item update(Item item) {
-        return null;
+    public Item update(ItemCreateDto item) {
+        Item itemNew = itemMap.get(item.getId());
+        itemNew.setName(item.getName());
+        itemNew.setDescription(item.getDescription());
+        itemNew.setAvailable(String.valueOf(item.getAvailable()));
+        return itemNew;
+    }
+
+    @Override
+    public Item updatePatch(ItemPatchDto item) {
+        Item itemNew = itemMap.get(item.getId());
+        if (item.getName() != null) {
+            itemNew.setName(item.getName());
+        }
+        if (item.getDescription() != null) {
+            itemNew.setDescription(item.getDescription());
+        }
+        if (item.getAvailable() != null) {
+            itemNew.setAvailable(String.valueOf(item.getAvailable()));
+        }
+        return itemNew;
     }
 
     @Override
@@ -65,12 +91,7 @@ public class ItemDbStorageImpl implements ItemStorage {
 
     @Override
     public Optional<Item> get(long id) {
-        String query = "SELECT * FROM item WHERE id = ?";
-        try {
-            Item result = jdbc.queryForObject(query, mapper, id);
-            return Optional.ofNullable(result);
-        } catch (EmptyResultDataAccessException ignored) {
-            return Optional.empty();
-        }
+        Item item = itemMap.get((int) id);
+        return Optional.ofNullable(item);
     }
 }

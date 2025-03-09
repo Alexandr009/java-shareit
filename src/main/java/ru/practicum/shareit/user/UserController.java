@@ -1,18 +1,20 @@
 package ru.practicum.shareit.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.user.dto.UserPatchDto;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Optional;
 
-
 @Slf4j
 @RestController
 @RequestMapping(path = "/users")
+@Validated
 public class UserController {
 
     @Autowired
@@ -24,9 +26,9 @@ public class UserController {
 
     @GetMapping
     public Collection<User> findAll() {
-        log.info(String.format("findAll user started - %s",userService.findAll().toString()));
+        log.info(String.format("findAll user started - %s", userService.findAll().toString()));
         Collection<User> user = userService.findAll();
-        log.info(String.format("findAll user finished - %s",user.toString()));
+        log.info(String.format("findAll user finished - %s", user.toString()));
         return user;
     }
 
@@ -37,18 +39,37 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@RequestBody User user) throws ParseException {
-        log.info(String.format("create user started - %s",String.valueOf(user)));
+    public User create(@Validated(value = {Create.class, Update.class}) @RequestBody User user) throws ParseException {
+        log.info(String.format("create user started - %s", String.valueOf(user)));
         User userNew = userService.create(user);
-        log.info(String.format("create user finished - %s",userNew.toString()));
+        log.info(String.format("create user finished - %s", userNew.toString()));
         return userNew;
     }
 
     @PutMapping
-    public User update(@RequestBody User user) throws ParseException {
-        log.info(String.format("update user started - %s",String.valueOf(user)));
+    public User update(@Validated({Create.class, Update.class}) @RequestBody User user) throws ParseException {
+        log.info(String.format("update user started - %s", String.valueOf(user)));
         User userNew = userService.update(user);
-        log.info(String.format("update user finished - %s",String.valueOf(userNew)));
+        log.info(String.format("update user finished - %s", String.valueOf(userNew)));
         return userNew;
     }
+
+    @PatchMapping("/{id}")
+    public User updatePatch(@Validated({Create.class, Update.class}) @RequestBody UserPatchDto user, @PathVariable long id) throws ParseException {
+        log.info(String.format("update user started - %s", String.valueOf(user)));
+        User userNew = userService.updatePatch(user, id);
+        User user1 = new User();
+        user1.setEmail(user.getEmail());
+        user1.setName(user.getName());
+        user1.setId((int) id);
+        log.info(String.format("update user finished - %s", String.valueOf(userNew)));
+        return userNew;
+    }
+
+    @DeleteMapping("/{id}")
+    public void remove(@PathVariable long id) {
+        log.info(String.format("removeUserById started - %s - ", id));
+        userService.remove(id);
+    }
+
 }

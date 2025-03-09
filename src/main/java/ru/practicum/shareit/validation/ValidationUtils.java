@@ -14,7 +14,6 @@ import java.util.Date;
 
 public class ValidationUtils {
 
-    // Метод для валидации User
     public static void validateUser(User user) throws ParseException {
         LocalDate currentLocalDate = LocalDate.now();
 

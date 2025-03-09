@@ -16,5 +16,3 @@ public class ItemPatchDto {
     Integer id;
 }
 
-interface Update {
-}

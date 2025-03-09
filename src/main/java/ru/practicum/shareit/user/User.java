@@ -20,8 +20,3 @@ public class User {
     private Integer id;
 }
 
-interface Create {
-}
-
-interface Update {
-}

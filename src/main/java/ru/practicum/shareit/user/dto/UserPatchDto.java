@@ -18,8 +18,3 @@ public class UserPatchDto {
     private String email;
 }
 
-interface Create {
-}
-
-interface Update {
-}

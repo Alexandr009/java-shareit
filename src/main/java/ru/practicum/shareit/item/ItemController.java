@@ -21,7 +21,7 @@ import java.util.Optional;
 @RequestMapping("/items")
 @Validated
 public class ItemController {
-    public static final String SHARER_USER_ID = "X-shareit-user-id";
+    public static final String SHARER_USER_ID_HEADER = "X-Sharer-User-Id";
     @Autowired
     private final ItemService itemService;
 
@@ -30,7 +30,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<Item> findAll(@RequestHeader("X-Sharer-User-Id") long userId) {
+    public Collection<Item> findAll(@RequestHeader(SHARER_USER_ID_HEADER) long userId) {
         if (userId != 0) {
             return itemService.findAllByUserId(userId);
         } else {
@@ -39,7 +39,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public Collection<Item> searchItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestParam(value = "text") String searchText) {
+    public Collection<Item> searchItem(@RequestHeader(SHARER_USER_ID_HEADER) long userId, @RequestParam(value = "text") String searchText) {
         log.info("Searching for " + searchText + " in " + userId);
         if (searchText.isEmpty() || searchText.equals("")) {
             return Collections.emptyList();
@@ -54,7 +54,7 @@ public class ItemController {
     }
 
     @PostMapping
-    Item create(@RequestHeader("X-Sharer-User-Id") long userId, @Validated({Create.class}) @RequestBody ItemCreateDto item) throws ParseException {
+    Item create(@RequestHeader(SHARER_USER_ID_HEADER) long userId, @Validated({Create.class}) @RequestBody ItemCreateDto item) throws ParseException {
         log.info(String.format("create started - %s", String.valueOf(item)));
         item.setUserId(userId);
         Item itemNew = itemService.create(item);
@@ -63,7 +63,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{id}")
-    Item updatePatch(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody ItemPatchDto item, @PathVariable long id) throws ParseException {
+    Item updatePatch(@RequestHeader(SHARER_USER_ID_HEADER) long userId, @RequestBody ItemPatchDto item, @PathVariable long id) throws ParseException {
         log.info(String.format("create started - %s", String.valueOf(item)));
         item.setUserId(userId);
         item.setId((int) id);

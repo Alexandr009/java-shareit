@@ -27,14 +27,14 @@ public class ItemDbStorageImpl implements ItemStorage {
 
     @Override
     public Collection<Item> getAllByUserId(long userId) {
-        Collection<Item> result = itemMap.values().stream().filter(item -> item.getUser().getId() == userId).collect(Collectors.toList());
+        Collection<Item> result = itemMap.values().stream().filter(item -> item.getOwner().getId() == userId).collect(Collectors.toList());
         return result;
     }
 
     @Override
     public Collection<Item> getAllByText(long userId, String text) {
         Collection<Item> result = itemMap.values().stream()
-                .filter(item -> item.getUser().getId() == userId)
+                .filter(item -> item.getOwner().getId() == userId)
                 .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase()) ||
                         item.getDescription().toLowerCase().contains(text.toLowerCase()))
                 .filter(item -> item.getAvailable().toString().contains("true"))
@@ -52,9 +52,9 @@ public class ItemDbStorageImpl implements ItemStorage {
         Item itemNew = new Item();
         itemNew.setName(item.getName());
         itemNew.setDescription(item.getDescription());
-        itemNew.setAvailable(String.valueOf(item.getAvailable()));
+        itemNew.setAvailable(item.getAvailable());
         itemNew.setId(item.getId());
-        itemNew.setUser(user);
+        itemNew.setOwner(user);
         itemMap.put(item.getId(), itemNew);
         Item newItem = itemMap.get(item.getId());
         return newItem;
@@ -65,7 +65,7 @@ public class ItemDbStorageImpl implements ItemStorage {
         Item itemNew = itemMap.get(item.getId());
         itemNew.setName(item.getName());
         itemNew.setDescription(item.getDescription());
-        itemNew.setAvailable(String.valueOf(item.getAvailable()));
+        itemNew.setAvailable(item.getAvailable());
         return itemNew;
     }
 
@@ -79,7 +79,7 @@ public class ItemDbStorageImpl implements ItemStorage {
             itemNew.setDescription(item.getDescription());
         }
         if (item.getAvailable() != null) {
-            itemNew.setAvailable(String.valueOf(item.getAvailable()));
+            itemNew.setAvailable(item.getAvailable());
         }
         return itemNew;
     }

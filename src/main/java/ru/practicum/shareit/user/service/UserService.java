@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ConditionsNotMetException;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -14,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -66,6 +68,13 @@ public class UserService {
         Optional<User> userCheck = userRepository.findById(id);
         if (!userCheck.isEmpty()) {
             //return userDbStorage.patchUser(user, id);
+            if(userCheck.get().getName() != user.getName() && user.getName() != null) {
+                userCheck.get().setName(user.getName());
+            }
+
+            if(user.getEmail() != null && userCheck.get().getEmail() != user.getEmail()) {
+                userCheck.get().setEmail(user.getEmail());
+            }
             return userRepository.save(userCheck.get());
         }
         throw new NotFoundException(String.format("User with id = %s not found", id));

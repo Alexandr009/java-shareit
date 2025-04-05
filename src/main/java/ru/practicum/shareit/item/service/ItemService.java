@@ -45,7 +45,8 @@ public class ItemService {
     }
 
     public Collection<Item> findAllByText(long userId, String text) {
-        return itemDbStorage.getAllByText(userId, text);//
+        //return itemDbStorage.getAllByText(userId, text);//
+        return itemRepository.searchByText(userId, text);//
     }
 
     public Optional<Item> getItemById(long id) {
@@ -62,8 +63,8 @@ public class ItemService {
         if (item.getName() == null || item.getName().isEmpty()) {
             throw new ValidationException("Name cannot be empty");
         }
-        nextID++;
-        item.setId(nextID);
+       // nextID++;
+        //item.setId(nextID);
         //Item itemNew = itemDbStorage.creat(item, existingUser.get());
         Item itemNew = new Item();
         itemNew.setName(item.getName());

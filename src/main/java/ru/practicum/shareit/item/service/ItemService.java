@@ -2,19 +2,27 @@ package ru.practicum.shareit.item.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.storage.BookinRepository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.item.dto.CommentCreateDto;
+import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.storage.CommentRepository;
+import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemDbStorageImpl;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.storage.UserRepository;
 import ru.practicum.shareit.user.storage.UserDbStorageImpl;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -24,13 +32,17 @@ public class ItemService {
     private int nextID;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
+    private final BookinRepository bookinRepository;
 
     @Autowired
-    public ItemService(ItemDbStorageImpl itemDbStorage, UserDbStorageImpl userDbStorage, ItemRepository itemRepository, UserRepository userRepository) {
+    public ItemService(ItemDbStorageImpl itemDbStorage, UserDbStorageImpl userDbStorage, ItemRepository itemRepository, UserRepository userRepository, CommentRepository commentRepository,BookinRepository bookinRepository) {
         this.itemDbStorage = itemDbStorage;
         this.userDbStorage = userDbStorage;
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
+        this.bookinRepository = bookinRepository;
     }
 
     public Collection<Item> findAll() {
@@ -123,5 +135,39 @@ public class ItemService {
         }
         return itemRepository.save(existingItem);
 
+    }
+
+    public Comment createComment(CommentCreateDto comment, long itemId, long userId) throws ParseException {
+        Optional<Item> existingItem = itemRepository.findById(Long.valueOf(itemId));
+        if (existingItem.isEmpty()) {
+            throw new NotFoundException(String.format("Item with id = %s not found", itemId));
+        }
+        //Item currentItem = existingItem.get();
+        Optional<User> existingUser = userRepository.findById(userId);
+        if (existingUser.isEmpty()) {
+            throw new NotFoundException(String.format("User with id = %s not found", userId));
+        }
+        Date createdDate = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+//        Optional<Booking> existingBooking = bookinRepository.findByItem_Id((int) itemId);
+//        if (!existingBooking.isEmpty()) {
+//            if (!existingBooking.get().getEnd().before(createdDate)){
+//                throw new ValidationException(String.format("Booking = %s not end", existingBooking.get().getId()));
+//            }
+//        }
+
+        Collection<Booking> existingBookingUser = bookinRepository.findByBookerId((int)userId);
+        if (existingBookingUser.isEmpty()) {
+            throw new ValidationException(String.format("User id = %s can't write comments", (int)userId));
+        }
+
+
+        Comment currentComment = new Comment();
+        currentComment.setItem(existingItem.get());
+        currentComment.setAuthor(existingUser.get());
+        currentComment.setText(comment.getText());
+
+        currentComment.setCreated(createdDate);
+        currentComment = commentRepository.save(currentComment);
+        return currentComment;
     }
 }

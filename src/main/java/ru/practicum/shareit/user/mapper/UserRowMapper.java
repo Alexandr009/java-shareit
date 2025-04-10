@@ -2,7 +2,7 @@ package ru.practicum.shareit.user.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

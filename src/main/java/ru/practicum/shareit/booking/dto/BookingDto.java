@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.Status;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.dto.AutorDto;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.Date;
 
@@ -14,7 +17,7 @@ public class BookingDto {
     Integer id;
     Date start;
     Date end;
-    Integer itemId;
-    Integer bookerId;
+    Item item;
+    AutorDto author;
     Status status;
 }

@@ -6,12 +6,11 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookinRepository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.item.dto.CommentCreateDto;
+import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
-import ru.practicum.shareit.item.dto.ItemCreateDto;
-import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemDbStorageImpl;
 import ru.practicum.shareit.user.model.User;
@@ -21,9 +20,8 @@ import ru.practicum.shareit.user.storage.UserDbStorageImpl;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -34,15 +32,17 @@ public class ItemService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final BookinRepository bookinRepository;
+    private final ItemMapper itemMapper;
 
     @Autowired
-    public ItemService(ItemDbStorageImpl itemDbStorage, UserDbStorageImpl userDbStorage, ItemRepository itemRepository, UserRepository userRepository, CommentRepository commentRepository,BookinRepository bookinRepository) {
+    public ItemService(ItemDbStorageImpl itemDbStorage, UserDbStorageImpl userDbStorage, ItemRepository itemRepository, UserRepository userRepository, CommentRepository commentRepository,BookinRepository bookinRepository,ItemMapper itemMapper) {
         this.itemDbStorage = itemDbStorage;
         this.userDbStorage = userDbStorage;
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
         this.bookinRepository = bookinRepository;
+        this.itemMapper = itemMapper;
     }
 
     public Collection<Item> findAll() {
@@ -54,6 +54,45 @@ public class ItemService {
         //return itemDbStorage.getAllByUserId(userId);
         Optional<User> user = userRepository.findById(userId);
         return itemRepository.findByOwner(user.orElse(null));
+    }
+
+    public ItemDto findItemByIdAndUserId(long id, long userId) {
+
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Item> items =itemRepository.findById(id);
+        Item item = items.get();
+        List<Comment> comments = commentRepository.findAllByItem_Id(id);
+        List<CommentCreateDto> commentDtos = comments.stream()
+                .map(comment -> new CommentCreateDto(
+                        comment.getText()
+                ))
+                .toList();
+
+//        Date createdDate = Date.from(
+//                LocalDateTime.now()
+//                        .plusHours(3)
+//                        .atZone(ZoneId.systemDefault())
+//                        .toInstant()
+//        );
+        Date currentDate = new Date();
+
+        //Optional<Booking> lastBooking = bookinRepository.findByItem_Id(items.get().getId());
+        //Optional<Booking> nextBooking = bookinRepository.findByItem_Id(items.get().getId());
+        Booking lastBooking = bookinRepository.findByItem(item).stream()
+                .filter(booking -> booking.getItem().getId().equals(item.getId()))
+                .filter(booking -> booking.getStart().before(currentDate))
+                .max(Comparator.comparing(Booking::getStart))
+                .orElse(null);
+
+        Booking nextBooking = bookinRepository.findByItem(item).stream()
+                .filter(booking -> booking.getItem().getId().equals(item.getId()))
+                .filter(booking -> booking.getStart().after(currentDate))
+                .min(Comparator.comparing(Booking::getStart))
+                .orElse(null);
+
+        ItemDto itemDto = itemMapper.toItemDto(items.get(),commentDtos, lastBooking, nextBooking, id);
+        return itemDto;
+        //return itemRepository.findByOwner(user.orElse(null));
     }
 
     public Collection<Item> findAllByText(long userId, String text) {
@@ -137,29 +176,37 @@ public class ItemService {
 
     }
 
-    public Comment createComment(CommentCreateDto comment, long itemId, long userId) throws ParseException {
+    public CommentInfoDto createComment(CommentCreateDto comment, long itemId, long userId) throws ParseException {
         Optional<Item> existingItem = itemRepository.findById(Long.valueOf(itemId));
         if (existingItem.isEmpty()) {
             throw new NotFoundException(String.format("Item with id = %s not found", itemId));
         }
-        //Item currentItem = existingItem.get();
         Optional<User> existingUser = userRepository.findById(userId);
         if (existingUser.isEmpty()) {
             throw new NotFoundException(String.format("User with id = %s not found", userId));
         }
-        Date createdDate = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-//        Optional<Booking> existingBooking = bookinRepository.findByItem_Id((int) itemId);
-//        if (!existingBooking.isEmpty()) {
-//            if (!existingBooking.get().getEnd().before(createdDate)){
-//                throw new ValidationException(String.format("Booking = %s not end", existingBooking.get().getId()));
-//            }
-//        }
-
+        //Date createdDate = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        Date createdDate = Date.from(
+                LocalDateTime.now()
+                        .plusHours(3) // Добавляем 2 часа
+                        .atZone(ZoneId.systemDefault())
+                        .toInstant()
+        );
         Collection<Booking> existingBookingUser = bookinRepository.findByBookerId((int)userId);
         if (existingBookingUser.isEmpty()) {
             throw new ValidationException(String.format("User id = %s can't write comments", (int)userId));
         }
 
+        Optional<Booking> existBooking = bookinRepository.findByItem_Id((int)itemId);
+        if (existBooking.isEmpty()) {
+            throw new NotFoundException(String.format("Booking with id = %s not found", itemId));
+        }else {
+            Collection<Booking> listBookingUser = existBooking.stream().filter(booking -> booking.getBooker().getId() == userId).collect(Collectors.toList());
+            Collection<Booking> listBookingEnd = listBookingUser.stream().filter(booking -> booking.getEnd().before(createdDate)).collect(Collectors.toList());
+            if (listBookingEnd.isEmpty()) {
+                throw new ValidationException(String.format("Access denied for user = %s", userId));
+            }
+        }
 
         Comment currentComment = new Comment();
         currentComment.setItem(existingItem.get());
@@ -168,6 +215,9 @@ public class ItemService {
 
         currentComment.setCreated(createdDate);
         currentComment = commentRepository.save(currentComment);
-        return currentComment;
+
+        CommentInfoDto newComment = itemMapper.toCommentDto(currentComment); //new CommentInfoDto();
+
+        return newComment;
     }
 }

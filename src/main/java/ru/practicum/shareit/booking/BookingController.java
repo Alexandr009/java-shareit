@@ -32,7 +32,7 @@ public class BookingController {
         if (state == null) {
             state = "ALL";
         }
-        return bookinService.findAll(state);
+        return bookinService.findAll(state, userId);
         //return bookinService.findAllByUserId(userId,state);
     }
 

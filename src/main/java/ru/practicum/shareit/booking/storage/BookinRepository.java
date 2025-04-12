@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.item.model.Item;
 
 import java.util.Collection;
 import java.util.Date;
@@ -24,4 +25,6 @@ public interface BookinRepository extends JpaRepository<Booking, Long>{
     Collection<Booking> findAllByStartBefore(Date startBefore);
 
     Collection<Booking> findAllByStartBeforeAndEndAfter(Date startBefore, Date endAfter);
+
+    Collection<Booking> findByItem(Item item);
 }

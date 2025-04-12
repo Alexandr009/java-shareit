@@ -35,7 +35,7 @@ public class BookinService {
         this.bookinRepository = bookinRepository;
     }
 
-    public Collection<Booking> findAll(String status) {
+    public Collection<Booking> findAll(String status, long userId) {
         //return itemDbStorage.getAll();
         Date createdDate = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
         if (status.equals("REJECTED")){
@@ -49,7 +49,8 @@ public class BookinService {
         } else if (status.equals("CURRENT")){
             return bookinRepository.findAllByStartBeforeAndEndAfter(createdDate, createdDate);
         } else {
-            return bookinRepository.findAll();
+            ///return bookinRepository.findAll();
+            return bookinRepository.findByBookerId((int) userId);
         }
 
     }

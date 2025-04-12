@@ -4,10 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.CommentCreateDto;
-import ru.practicum.shareit.item.dto.Create;
-import ru.practicum.shareit.item.dto.ItemCreateDto;
-import ru.practicum.shareit.item.dto.ItemPatchDto;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
@@ -49,11 +46,19 @@ public class ItemController {
         return itemService.findAllByText(userId, searchText);
     }
 
+//    @GetMapping("/{id}")
+//    public Optional<Optional<Item>> getItemById(@PathVariable long id) {
+//        log.info(String.format("getById started - %s - ", id));
+//        return Optional.ofNullable(itemService.getItemById(id));
+//    }//
+
     @GetMapping("/{id}")
-    public Optional<Optional<Item>> getItemById(@PathVariable long id) {
+    public Optional<ItemDto> getItemById(@PathVariable long id, @RequestHeader(SHARER_USER_ID_HEADER) long userId) {
         log.info(String.format("getById started - %s - ", id));
-        return Optional.ofNullable(itemService.getItemById(id));
-    }
+        //return Optional.ofNullable(itemService.getItemById(id));
+        return Optional.ofNullable(itemService.findItemByIdAndUserId(id, userId));
+
+    }//
 
     @PostMapping
     Item create(@RequestHeader(SHARER_USER_ID_HEADER) long userId, @Validated({Create.class}) @RequestBody ItemCreateDto item) throws ParseException {
@@ -83,12 +88,12 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    Comment createComment(@RequestHeader(SHARER_USER_ID_HEADER) long userId,@PathVariable long itemId, @RequestBody CommentCreateDto comment) throws ParseException {
+    CommentInfoDto createComment(@RequestHeader(SHARER_USER_ID_HEADER) long userId,@PathVariable long itemId, @RequestBody CommentCreateDto comment) throws ParseException {
         log.info(String.format("create started - %s", String.valueOf(comment)));
 //        comment.setitemId);
 //        comment.setAuthor(userId);
         //кажеться что вместо айтем ид будет букинг ид
-        Comment newComment = new Comment();
+        CommentInfoDto newComment = new CommentInfoDto();
         newComment = itemService.createComment(comment, itemId, userId);
         return newComment;
     }

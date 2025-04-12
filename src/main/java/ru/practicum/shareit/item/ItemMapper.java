@@ -53,25 +53,25 @@ public class ItemMapper {
         itemDto.setUser(item.getOwner());
         itemDto.setComments(comments != null ? comments : List.of());
 
-        if (lastBooking != null && lastBooking.getItem() != null && item.getId() == lastBooking.getItem().getId()) {
+        if (lastBooking != null && lastBooking.getItem() != null && !item.getId().equals(lastBooking.getItem().getId())) {
             BookingCreateDto lastBookingDto = new BookingCreateDto();
             lastBookingDto.setId(lastBooking.getId());
             lastBookingDto.setStart(lastBooking.getStart());
             lastBookingDto.setEnd(lastBooking.getEnd());
             lastBookingDto.setStatus(lastBooking.getStatus());
-            itemDto.setLastBooking(null);
+            itemDto.setLastBooking(lastBookingDto);
         } else {
             itemDto.setLastBooking(null);
         }
 
 
-        if (nextBooking != null && nextBooking.getItem() != null && item.getId() == nextBooking.getItem().getId()) {
+        if (nextBooking != null && nextBooking.getItem() != null && !item.getId().equals(nextBooking.getItem().getId())) {
             BookingCreateDto nextBookingDto = new BookingCreateDto();
             nextBookingDto.setId(nextBooking.getId());
             nextBookingDto.setStart(nextBooking.getStart());
             nextBookingDto.setEnd(nextBooking.getEnd());
             nextBookingDto.setStatus(nextBooking.getStatus());
-            itemDto.setNextBooking(null);
+            itemDto.setNextBooking(nextBookingDto);
         } else {
             itemDto.setNextBooking(null);
         }

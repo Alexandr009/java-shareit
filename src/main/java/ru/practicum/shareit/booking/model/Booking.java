@@ -34,11 +34,11 @@ public class Booking {
     Date end;
 
     @ManyToOne(fetch = FetchType.EAGER)
-            @JoinColumn(name = "item_id")
+    @JoinColumn(name = "item_id")
     Item item;
 
     @ManyToOne(fetch = FetchType.EAGER)//FetchType.LAZY)
-            @JoinColumn(name = "booker_id")
+    @JoinColumn(name = "booker_id")
     User booker;
 
     Status status;

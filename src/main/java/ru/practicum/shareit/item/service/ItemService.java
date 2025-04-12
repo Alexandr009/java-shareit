@@ -32,7 +32,7 @@ public class ItemService {
     private final ItemMapper itemMapper;
 
     @Autowired
-    public ItemService(ItemRepository itemRepository, UserRepository userRepository, CommentRepository commentRepository,BookinRepository bookinRepository,ItemMapper itemMapper) {
+    public ItemService(ItemRepository itemRepository, UserRepository userRepository, CommentRepository commentRepository, BookinRepository bookinRepository, ItemMapper itemMapper) {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
@@ -52,7 +52,7 @@ public class ItemService {
     public ItemDto findItemByIdAndUserId(long id, long userId) {
 
         Optional<User> user = userRepository.findById(userId);
-        Optional<Item> items =itemRepository.findById(id);
+        Optional<Item> items = itemRepository.findById(id);
         Item item = items.get();
         List<Comment> comments = commentRepository.findAllByItem_Id(id);
         List<CommentCreateDto> commentDtos = comments.stream()
@@ -74,7 +74,7 @@ public class ItemService {
                 .min(Comparator.comparing(Booking::getStart))
                 .orElse(null);
 
-        ItemDto itemDto = itemMapper.toItemDto(items.get(),commentDtos, lastBooking, nextBooking, id);
+        ItemDto itemDto = itemMapper.toItemDto(items.get(), commentDtos, lastBooking, nextBooking, id);
         return itemDto;
     }
 
@@ -160,15 +160,15 @@ public class ItemService {
                         .atZone(ZoneId.systemDefault())
                         .toInstant()
         );
-        Collection<Booking> existingBookingUser = bookinRepository.findByBookerId((int)userId);
+        Collection<Booking> existingBookingUser = bookinRepository.findByBookerId((int) userId);
         if (existingBookingUser.isEmpty()) {
-            throw new ValidationException(String.format("User id = %s can't write comments", (int)userId));
+            throw new ValidationException(String.format("User id = %s can't write comments", (int) userId));
         }
 
-        Optional<Booking> existBooking = bookinRepository.findByItem_Id((int)itemId);
+        Optional<Booking> existBooking = bookinRepository.findByItem_Id((int) itemId);
         if (existBooking.isEmpty()) {
             throw new NotFoundException(String.format("Booking with id = %s not found", itemId));
-        }else {
+        } else {
             Collection<Booking> listBookingUser = existBooking.stream().filter(booking -> booking.getBooker().getId() == userId).collect(Collectors.toList());
             Collection<Booking> listBookingEnd = listBookingUser.stream().filter(booking -> booking.getEnd().before(createdDate)).collect(Collectors.toList());
             if (listBookingEnd.isEmpty()) {

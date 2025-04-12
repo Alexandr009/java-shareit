@@ -56,11 +56,11 @@ public class UserService {
 
         Optional<User> userCheck = userRepository.findById(id);
         if (!userCheck.isEmpty()) {
-            if(userCheck.get().getName() != user.getName() && user.getName() != null) {
+            if (userCheck.get().getName() != user.getName() && user.getName() != null) {
                 userCheck.get().setName(user.getName());
             }
 
-            if(user.getEmail() != null && userCheck.get().getEmail() != user.getEmail()) {
+            if (user.getEmail() != null && userCheck.get().getEmail() != user.getEmail()) {
                 userCheck.get().setEmail(user.getEmail());
             }
             return userRepository.save(userCheck.get());

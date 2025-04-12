@@ -12,6 +12,7 @@ import java.util.Collection;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
     Item findByName(String name);
+
     Collection<Item> findByOwner(User owner);
 
     @Query("SELECT i FROM Item i " +

@@ -50,11 +50,11 @@ public class BookingController {
         if (userId == 0) {
             throw new ValidationException("owner cannot be empty");
         }
-        return bookinService.findAllByUserId(userId,"ALL");
+        return bookinService.findAllByUserId(userId, "ALL");
     }
 
     @PostMapping
-    Booking create(@RequestHeader(SHARER_USER_ID_HEADER) long userId,@RequestBody BookingCreateDto booking) throws ParseException {
+    Booking create(@RequestHeader(SHARER_USER_ID_HEADER) long userId, @RequestBody BookingCreateDto booking) throws ParseException {
         log.info(String.format("create started - %s", String.valueOf(booking)));
         booking.setBookerId((int) userId);
         Booking bookingNew = bookinService.create(booking);
@@ -62,7 +62,7 @@ public class BookingController {
     }
 
     @PatchMapping("/{id}")
-    Booking update(@RequestHeader(SHARER_USER_ID_HEADER) long userId, @PathVariable int id, @RequestParam(required = false) boolean approved){
+    Booking update(@RequestHeader(SHARER_USER_ID_HEADER) long userId, @PathVariable int id, @RequestParam(required = false) boolean approved) {
         log.info(String.format("update started - userId %s, bookingId %s", String.valueOf(userId), String.valueOf(id))); //, String.valueOf(approved));
         Booking booking = bookinService.update(id, userId, approved);
         return booking;

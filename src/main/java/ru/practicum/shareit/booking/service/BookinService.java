@@ -37,15 +37,15 @@ public class BookinService {
 
     public Collection<Booking> findAll(String status, long userId) {
         Date createdDate = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-        if (status.equals("REJECTED")){
+        if (status.equals("REJECTED")) {
             return bookinRepository.findAllByStatus(Status.REJECTED);
-        } else if (status.equals("WAITING")){
+        } else if (status.equals("WAITING")) {
             return bookinRepository.findAllByStatus(Status.WAITING);
-        } else if (status.equals("FUTURE")){
+        } else if (status.equals("FUTURE")) {
             return bookinRepository.findAllByStartAfter(createdDate);
-        } else if (status.equals("PAST")){
+        } else if (status.equals("PAST")) {
             return bookinRepository.findAllByEndBefore(createdDate);
-        } else if (status.equals("CURRENT")){
+        } else if (status.equals("CURRENT")) {
             return bookinRepository.findAllByStartBeforeAndEndAfter(createdDate, createdDate);
         } else {
             return bookinRepository.findByBookerId((int) userId);
@@ -53,7 +53,7 @@ public class BookinService {
 
     }
 
-    public Booking findById(Long id,Long userId) {
+    public Booking findById(Long id, Long userId) {
         Optional<Booking> booking = bookinRepository.findById(id);
         if (booking.get().getBooker().getId().intValue() != userId.intValue()) {
             if (booking.get().getItem().getOwner().getId().intValue() != userId.intValue()) {
@@ -62,13 +62,13 @@ public class BookinService {
         }
         if (booking.isPresent()) {
             return booking.get();
-        }else{
+        } else {
             throw new NotFoundException("Booking not found");
         }
 
     }
 
-    public Collection<Booking> findAllByUserId(long userId,String status) {
+    public Collection<Booking> findAllByUserId(long userId, String status) {
         Optional<User> user = userRepository.findById(userId);
         if (!user.isPresent()) {
             throw new NotFoundException(String.format("User with id = %s not found", user.get().getId()));
@@ -86,7 +86,7 @@ public class BookinService {
         if (existingItem.isEmpty()) {
             throw new NotFoundException(String.format("Item with id = %s not found", booking.getItemId()));
         }
-        if (existingItem.get().getAvailable() == false){
+        if (existingItem.get().getAvailable() == false) {
             throw new ValidationException(String.format("Item with id = %s is available", booking.getItemId()));
         }
 
@@ -113,7 +113,7 @@ public class BookinService {
         Booking booking = existingBooking.get();
         if (approved == false) {
             booking.setStatus(Status.REJECTED);
-        }else {
+        } else {
             booking.setStatus(Status.APPROVED);
         }
 

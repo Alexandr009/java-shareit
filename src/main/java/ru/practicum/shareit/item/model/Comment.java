@@ -20,11 +20,11 @@ public class Comment {
     String text;
 
     @ManyToOne(fetch = FetchType.LAZY)
-            @JoinColumn(name = "item_id")
+    @JoinColumn(name = "item_id")
     Item item;
 
     @ManyToOne(fetch = FetchType.LAZY)
-            @JoinColumn(name = "author_id")
+    @JoinColumn(name = "author_id")
     User author;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

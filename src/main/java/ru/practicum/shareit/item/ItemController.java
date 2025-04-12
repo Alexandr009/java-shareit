@@ -80,7 +80,7 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    CommentInfoDto createComment(@RequestHeader(SHARER_USER_ID_HEADER) long userId,@PathVariable long itemId, @RequestBody CommentCreateDto comment) throws ParseException {
+    CommentInfoDto createComment(@RequestHeader(SHARER_USER_ID_HEADER) long userId, @PathVariable long itemId, @RequestBody CommentCreateDto comment) throws ParseException {
         log.info(String.format("create started - %s", String.valueOf(comment)));
         CommentInfoDto newComment = new CommentInfoDto();
         newComment = itemService.createComment(comment, itemId, userId);

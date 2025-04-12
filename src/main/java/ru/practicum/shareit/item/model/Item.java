@@ -21,6 +21,6 @@ public class Item {
     Boolean available;
     //String available;
     @ManyToOne(fetch = FetchType.EAGER)//LAZY
-            @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "owner_id")
     User owner;
 }

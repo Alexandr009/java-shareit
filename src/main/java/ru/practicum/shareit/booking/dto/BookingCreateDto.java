@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.Status;
 
 import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

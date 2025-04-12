@@ -33,7 +33,6 @@ public class BookingController {
             state = "ALL";
         }
         return bookinService.findAll(state, userId);
-        //return bookinService.findAllByUserId(userId,state);
     }
 
     @GetMapping("/{id}")
@@ -52,7 +51,6 @@ public class BookingController {
             throw new ValidationException("owner cannot be empty");
         }
         return bookinService.findAllByUserId(userId,"ALL");
-        //return null;
     }
 
     @PostMapping
@@ -60,8 +58,6 @@ public class BookingController {
         log.info(String.format("create started - %s", String.valueOf(booking)));
         booking.setBookerId((int) userId);
         Booking bookingNew = bookinService.create(booking);
-        //Item itemNew = itemService.create(item);
-        //log.info(String.format("create finished - %s", itemNew.toString()));
         return bookingNew;
     }
 

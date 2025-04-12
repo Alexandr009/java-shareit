@@ -21,13 +21,3 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "AND i.available = true")
     Collection<Item> searchByText(@Param("userId") long userId, @Param("text") String text);
 }
-
-//public Collection<Item> getAllByText(long userId, String text) {
-//    Collection<Item> result = itemMap.values().stream()
-//            .filter(item -> item.getOwner().getId() == userId)
-//            .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase()) ||
-//                    item.getDescription().toLowerCase().contains(text.toLowerCase()))
-//            .filter(item -> item.getAvailable().toString().contains("true"))
-//            .collect(Collectors.toList());
-//    return result;
-//}

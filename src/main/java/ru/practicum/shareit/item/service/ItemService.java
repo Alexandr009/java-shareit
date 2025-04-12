@@ -127,7 +127,7 @@ public class ItemService {
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Item with id = %d not found", item.getId())));
 
-        if (item.getUserId() != Long.valueOf(existingItem.getOwner().getId())) {
+        if (!item.getUserId().equals(Long.valueOf(existingItem.getOwner().getId()))) {
             throw new NotFoundException("User is not the owner of this item");
         }
         if (item.getName() != null && !item.getName().isBlank()) {

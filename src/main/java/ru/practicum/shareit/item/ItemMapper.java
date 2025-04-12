@@ -16,60 +16,66 @@ import java.util.List;
 @NoArgsConstructor
 @Component
 public class ItemMapper {
-    public CommentInfoDto toCommentDto(Comment comment) {
-        CommentInfoDto commentInfoDto = new CommentInfoDto();
-        AutorDto autorDto = new AutorDto();
-        autorDto.setId(comment.getAuthor().getId());
-        autorDto.setAuthorName(comment.getAuthor().getName());
-        autorDto.setEmail(comment.getAuthor().getEmail());
 
+    public CommentInfoDto toCommentDto(Comment comment) {
+        if (comment == null) {
+            return null;
+        }
+
+        AutorDto autorDto = new AutorDto();
+        if (comment.getAuthor() != null) {
+            autorDto.setId(comment.getAuthor().getId());
+            autorDto.setAuthorName(comment.getAuthor().getName());
+            autorDto.setEmail(comment.getAuthor().getEmail());
+        }
+
+        CommentInfoDto commentInfoDto = new CommentInfoDto();
         commentInfoDto.setAuthor(autorDto);
         commentInfoDto.setItem(comment.getItem());
         commentInfoDto.setCreated(comment.getCreated());
         commentInfoDto.setText(comment.getText());
         commentInfoDto.setId(comment.getId());
-        commentInfoDto.setAuthorName(comment.getAuthor().getName());
+        commentInfoDto.setAuthorName(comment.getAuthor() != null ? comment.getAuthor().getName() : null);
+
         return commentInfoDto;
     }
 
-    public ItemDto toItemDto(Item item, List<CommentCreateDto> comment, Booking lastBooking, Booking nextBooking, long id) {
+    public ItemDto toItemDto(Item item, List<CommentCreateDto> comments, Booking lastBooking, Booking nextBooking, long itemId) {
+        if (item == null) {
+            return null;
+        }
+
         ItemDto itemDto = new ItemDto();
         itemDto.setId(item.getId());
         itemDto.setName(item.getName());
         itemDto.setDescription(item.getDescription());
         itemDto.setAvailable(item.getAvailable());
         itemDto.setUser(item.getOwner());
+        itemDto.setComments(comments != null ? comments : List.of());
 
-        itemDto.setComments(comment);
-
-        BookingCreateDto bookingDto = new BookingCreateDto();
-        if (lastBooking != null && id != lastBooking.getId()) {
-            bookingDto.setId(lastBooking.getId());
-            bookingDto.setStatus(lastBooking.getStatus());
-            bookingDto.setEnd(lastBooking.getEnd());
-            bookingDto.setStart(lastBooking.getStart());
-            bookingDto.setStatus(lastBooking.getStatus());
-            itemDto.setLastBooking(bookingDto);
+        if (lastBooking != null && lastBooking.getItem() != null && item.getId() == lastBooking.getItem().getId()) {
+            BookingCreateDto lastBookingDto = new BookingCreateDto();
+            lastBookingDto.setId(lastBooking.getId());
+            lastBookingDto.setStart(lastBooking.getStart());
+            lastBookingDto.setEnd(lastBooking.getEnd());
+            lastBookingDto.setStatus(lastBooking.getStatus());
+            itemDto.setLastBooking(null);
         } else {
             itemDto.setLastBooking(null);
         }
 
 
-        BookingCreateDto bookingDtoNext = new BookingCreateDto();
-        if (nextBooking != null && id != nextBooking.getId()) {
-            bookingDtoNext.setId(nextBooking.getId());
-            bookingDtoNext.setStatus(nextBooking.getStatus());
-            bookingDtoNext.setEnd(nextBooking.getEnd());
-            bookingDtoNext.setStart(nextBooking.getStart());
-            bookingDtoNext.setStatus(nextBooking.getStatus());
-            itemDto.setNextBooking(bookingDtoNext);
+        if (nextBooking != null && nextBooking.getItem() != null && item.getId() == nextBooking.getItem().getId()) {
+            BookingCreateDto nextBookingDto = new BookingCreateDto();
+            nextBookingDto.setId(nextBooking.getId());
+            nextBookingDto.setStart(nextBooking.getStart());
+            nextBookingDto.setEnd(nextBooking.getEnd());
+            nextBookingDto.setStatus(nextBooking.getStatus());
             itemDto.setNextBooking(null);
         } else {
             itemDto.setNextBooking(null);
         }
 
-
         return itemDto;
-
     }
 }

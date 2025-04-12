@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface BookinRepository extends JpaRepository<Booking, Long> {
-    Collection<Booking> findByBookerId(Integer booker_id);
+    Collection<Booking> findByBookerId(Integer bookerId);
 
     Optional<Booking> findByItem_Id(Integer itemId);
 

@@ -7,7 +7,6 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 import ru.practicum.shareit.user.dto.UserPatchDto;
-import ru.practicum.shareit.user.storage.UserDbStorageImpl;
 
 import java.text.ParseException;
 import java.util.ArrayList;

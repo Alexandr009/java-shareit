@@ -1,7 +1,9 @@
 package ru.practicum.shareit.item.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookinRepository;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -20,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
+@Slf4j
 @Service
 public class ItemService {
     private final ItemRepository itemRepository;
@@ -143,31 +146,30 @@ public class ItemService {
     }
 
     public CommentInfoDto createComment(CommentCreateDto commentDto, long itemId, long userId) {
-
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException("Item with id = " + itemId + " not found"));
+                .orElseThrow(() -> new NotFoundException("Item not found"));
 
         User author = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User with id = " + userId + " not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
-        LocalDateTime now = LocalDateTime.now();
-        Date currentDate = Date.from(
-                LocalDateTime.now()
-                        .plusHours(3)
-                        .atZone(ZoneId.systemDefault())
-                        .toInstant()
-        );
+        Date currentDate = new Date();
+
         List<Booking> userBookings = bookinRepository.findByBookerIdAndItemId(userId, itemId);
-
         if (userBookings.isEmpty()) {
-            throw new ValidationException("User " + userId + " has not booked item " + itemId);
+            throw new ValidationException("User never booked this item");
         }
 
-        boolean hasCompletedBooking = userBookings.stream()
-                .anyMatch(booking -> booking.getEnd().before(currentDate));
+        boolean canComment = userBookings.stream()
+                .anyMatch(booking ->
+                        booking.getStatus() == Status.APPROVED &&
+                                booking.getEnd().before(currentDate)
+                );
 
-        if (!hasCompletedBooking) {
-            throw new ValidationException("Cannot comment before booking end");
+        log.info("Can comment: {}, Booking end: {}, Current: {}",
+                canComment, userBookings.get(0).getEnd(), currentDate);
+
+        if (!canComment) {
+            throw new ValidationException("Booking not ended yet");
         }
 
         Comment comment = new Comment();
@@ -176,7 +178,6 @@ public class ItemService {
         comment.setAuthor(author);
         comment.setCreated(currentDate);
 
-        Comment savedComment = commentRepository.save(comment);
-        return itemMapper.toCommentDto(savedComment);
+        return itemMapper.toCommentDto(commentRepository.save(comment));
     }
 }

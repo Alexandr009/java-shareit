@@ -167,7 +167,7 @@ public class ItemService {
                 .anyMatch(booking -> booking.getEnd().before(currentDate));
 
         if (!hasCompletedBooking) {
-            throw new ValidationException("Cannot comment before booking end");
+
         }
 
         Comment comment = new Comment();

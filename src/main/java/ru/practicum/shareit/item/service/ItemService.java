@@ -144,9 +144,11 @@ public class ItemService {
 
     public CommentInfoDto createComment(CommentCreateDto commentDto, long itemId, long userId) {
 
-        Optional<Item> item = itemRepository.findById(itemId);
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Item with id = " + itemId + " not found"));
 
-        Optional<User> author = userRepository.findById(userId);
+        User author = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User with id = " + userId + " not found"));
 
         LocalDateTime now = LocalDateTime.now();
         Date currentDate = Date.from(
@@ -155,12 +157,23 @@ public class ItemService {
                         .atZone(ZoneId.systemDefault())
                         .toInstant()
         );
+        List<Booking> userBookings = bookinRepository.findByBookerIdAndItemId(userId, itemId);
 
+        if (userBookings.isEmpty()) {
+            throw new ValidationException("User " + userId + " has not booked item " + itemId);
+        }
+
+        boolean hasCompletedBooking = userBookings.stream()
+                .anyMatch(booking -> booking.getEnd().before(currentDate));
+
+        if (!hasCompletedBooking) {
+            throw new ValidationException("Cannot comment before booking end");
+        }
 
         Comment comment = new Comment();
         comment.setText(commentDto.getText());
-        comment.setItem(item.get());
-        comment.setAuthor(author.get());
+        comment.setItem(item);
+        comment.setAuthor(author);
         comment.setCreated(currentDate);
 
         Comment savedComment = commentRepository.save(comment);

@@ -163,13 +163,6 @@ public class ItemService {
             throw new ValidationException("User " + userId + " has not booked item " + itemId);
         }
 
-        boolean hasCompletedBooking = userBookings.stream()
-                .anyMatch(booking -> booking.getEnd().before(currentDate));
-
-        if (!hasCompletedBooking) {
-
-        }
-
         Comment comment = new Comment();
         comment.setText(commentDto.getText());
         comment.setItem(item);

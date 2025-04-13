@@ -37,7 +37,7 @@ public class Booking {
     @JoinColumn(name = "item_id")
     Item item;
 
-    @ManyToOne(fetch = FetchType.EAGER)//FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "booker_id")
     User booker;
 

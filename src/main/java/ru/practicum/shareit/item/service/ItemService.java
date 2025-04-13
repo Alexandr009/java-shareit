@@ -90,7 +90,7 @@ public class ItemService {
             throw new NotFoundException(String.format("User with id = %s not found", item.getId()));
         }
         if (item.getName() == null || item.getName().isEmpty()) {
-            throw new ValidationException("Name cannot be empty");
+            throw new ValidationException("Name cannot be empty for itemId: %s" + item.getId());
         }
 
         Item itemNew = new Item();
@@ -106,11 +106,11 @@ public class ItemService {
     public Item update(ItemCreateDto item) throws ParseException {
         Optional<Item> existingItem = itemRepository.findById(Long.valueOf(item.getId()));
         if (existingItem.isEmpty()) {
-            throw new NotFoundException(String.format("Item with id = %s not found", item.getId()));
+            throw new NotFoundException(String.format("Item with id: %s not found", item.getId()));
         }
         Item currentItem = existingItem.get();
         if (item.getUserId() != (int) currentItem.getOwner().getId()) {
-            throw new NotFoundException("User id wrong");
+            throw new NotFoundException(String.format("User id: %s wrong",item.getUserId().intValue()));
         }
 
         Item itemNew = new Item();
@@ -128,7 +128,7 @@ public class ItemService {
                         String.format("Item with id = %d not found", item.getId())));
 
         if (!item.getUserId().equals(Long.valueOf(existingItem.getOwner().getId()))) {
-            throw new NotFoundException("User is not the owner of this item");
+            throw new NotFoundException(String.format("UserId: %d is not the owner of this itemId: %d",item.getUserId().intValue(),item.getId()));
         }
         if (item.getName() != null && !item.getName().isBlank()) {
             existingItem.setName(item.getName());
@@ -145,16 +145,16 @@ public class ItemService {
 
     public CommentInfoDto createComment(CommentCreateDto commentDto, long itemId, long userId) {
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException("Item not found"));
+                .orElseThrow(() -> new NotFoundException(String.format("ItemId: %s not found",itemId)));
 
         User author = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException(String.format("UserId: %s not found",userId)));
 
         Date currentDate = new Date();
 
         List<Booking> userBookings = bookinRepository.findByBookerIdAndItemId(userId, itemId);
         if (userBookings.isEmpty()) {
-            throw new ValidationException("User never booked this item");
+            throw new ValidationException(String.format("UserId: %s never booked itemId: %s",userId,itemId));
         }
 
         boolean canComment = userBookings.stream()
@@ -167,7 +167,7 @@ public class ItemService {
                 canComment, userBookings.get(0).getEnd(), currentDate);
 
         if (!canComment) {
-            throw new ValidationException("Booking not ended yet");
+            throw new ValidationException(String.format("BookingId: %s not ended yet",userBookings.getFirst().getId()));
         }
 
         Comment comment = new Comment();

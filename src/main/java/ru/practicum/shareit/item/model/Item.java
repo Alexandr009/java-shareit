@@ -19,8 +19,8 @@ public class Item {
 
     @Column(name = "is_available")
     Boolean available;
-    //String available;
-    @ManyToOne(fetch = FetchType.EAGER)//LAZY
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id")
     User owner;
 }

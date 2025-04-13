@@ -57,13 +57,13 @@ public class BookinService {
         Optional<Booking> booking = bookinRepository.findById(id);
         if (booking.get().getBooker().getId().intValue() != userId.intValue()) {
             if (booking.get().getItem().getOwner().getId().intValue() != userId.intValue()) {
-                throw new ValidationException("Access denied for user");
+                throw new ValidationException(String.format("Access denied for userId:%s",userId.intValue()));
             }
         }
         if (booking.isPresent()) {
             return booking.get();
         } else {
-            throw new NotFoundException("Booking not found");
+            throw new NotFoundException(String.format("BookingId: id not found", id.intValue()));
         }
 
     }

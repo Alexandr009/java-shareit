@@ -38,7 +38,7 @@ public class ItemController {
 
     @GetMapping("/search")
     public Collection<Item> searchItem(@RequestHeader(SHARER_USER_ID_HEADER) long userId, @RequestParam(value = "text") String searchText) {
-        log.info("Searching for " + searchText + " in " + userId);
+        log.info("Searching for %s in %s",searchText, userId);
         if (searchText.isEmpty() || searchText.equals("")) {
             return Collections.emptyList();
         }

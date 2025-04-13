@@ -9,9 +9,9 @@ import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -19,7 +19,6 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -143,46 +142,41 @@ public class ItemService {
 
     }
 
-    public CommentInfoDto createComment(CommentCreateDto comment, long itemId, long userId) throws ParseException {
-        Optional<Item> existingItem = itemRepository.findById(Long.valueOf(itemId));
-        if (existingItem.isEmpty()) {
-            throw new NotFoundException(String.format("Item with id = %s not found", itemId));
-        }
-        Optional<User> existingUser = userRepository.findById(userId);
-        if (existingUser.isEmpty()) {
-            throw new NotFoundException(String.format("User with id = %s not found", userId));
-        }
-        Date createdDate = Date.from(
+    public CommentInfoDto createComment(CommentCreateDto commentDto, long itemId, long userId) {
+
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Item with id = " + itemId + " not found"));
+
+        User author = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User with id = " + userId + " not found"));
+
+        LocalDateTime now = LocalDateTime.now();
+        Date currentDate = Date.from(
                 LocalDateTime.now()
                         .plusHours(3)
                         .atZone(ZoneId.systemDefault())
                         .toInstant()
         );
-        Collection<Booking> existingBookingUser = bookinRepository.findByBookerId((int) userId);
-        if (existingBookingUser.isEmpty()) {
-            throw new ValidationException(String.format("User id = %s can't write comments", (int) userId));
+        List<Booking> userBookings = bookinRepository.findByBookerIdAndItemId(userId, itemId);
+
+        if (userBookings.isEmpty()) {
+            throw new ValidationException("User " + userId + " has not booked item " + itemId);
         }
 
-        Optional<Booking> existBooking = bookinRepository.findByItem_Id((int) itemId);
-        if (existBooking.isEmpty()) {
-            throw new NotFoundException(String.format("Booking with id = %s not found", itemId));
-        } else {
-            Collection<Booking> listBookingUser = existBooking.stream().filter(booking -> booking.getBooker().getId() == userId).collect(Collectors.toList());
-            Collection<Booking> listBookingEnd = listBookingUser.stream().filter(booking -> booking.getEnd().before(createdDate)).collect(Collectors.toList());
-            if (listBookingEnd.isEmpty()) {
-                throw new ValidationException(String.format("Access denied for user = %s", userId));
-            }
+        boolean hasCompletedBooking = userBookings.stream()
+                .anyMatch(booking -> booking.getEnd().before(currentDate));
+
+        if (!hasCompletedBooking) {
+            throw new ValidationException("Cannot comment before booking end");
         }
 
-        Comment currentComment = new Comment();
-        currentComment.setItem(existingItem.get());
-        currentComment.setAuthor(existingUser.get());
-        currentComment.setText(comment.getText());
+        Comment comment = new Comment();
+        comment.setText(commentDto.getText());
+        comment.setItem(item);
+        comment.setAuthor(author);
+        comment.setCreated(currentDate);
 
-        currentComment.setCreated(createdDate);
-        currentComment = commentRepository.save(currentComment);
-
-        CommentInfoDto newComment = itemMapper.toCommentDto(currentComment); //new CommentInfoDto();
-        return newComment;
+        Comment savedComment = commentRepository.save(comment);
+        return itemMapper.toCommentDto(savedComment);
     }
 }

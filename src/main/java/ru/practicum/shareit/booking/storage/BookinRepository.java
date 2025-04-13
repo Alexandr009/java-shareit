@@ -8,6 +8,7 @@ import ru.practicum.shareit.item.model.Item;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,4 +28,6 @@ public interface BookinRepository extends JpaRepository<Booking, Long> {
     Collection<Booking> findAllByStartBeforeAndEndAfter(Date startBefore, Date endAfter);
 
     Collection<Booking> findByItem(Item item);
+
+    List<Booking> findByBookerIdAndItemId(long bookerId, long itemId);
 }

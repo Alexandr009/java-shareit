@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 @Setter
@@ -23,4 +24,8 @@ public class Item {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id")
     User owner;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "request_id")
+    ItemRequest itemRequest;
 }

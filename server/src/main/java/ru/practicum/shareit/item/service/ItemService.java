@@ -14,6 +14,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.storage.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -28,14 +30,16 @@ public class ItemService {
     private final CommentRepository commentRepository;
     private final BookinRepository bookinRepository;
     private final ItemMapper itemMapper;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Autowired
-    public ItemService(ItemRepository itemRepository, UserRepository userRepository, CommentRepository commentRepository, BookinRepository bookinRepository, ItemMapper itemMapper) {
+    public ItemService(ItemRepository itemRepository, UserRepository userRepository, CommentRepository commentRepository, BookinRepository bookinRepository, ItemMapper itemMapper, ItemRequestRepository itemRequestRepository) {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
         this.bookinRepository = bookinRepository;
         this.itemMapper = itemMapper;
+        this.itemRequestRepository = itemRequestRepository;
     }
 
     public Collection<Item> findAll() {
@@ -98,6 +102,11 @@ public class ItemService {
         itemNew.setOwner(existingUser.get());
         itemNew.setAvailable(item.getAvailable());
         itemNew.setDescription(item.getDescription());
+        if (item.getRequestId() != null) {
+            ItemRequest itemRequest = itemRequestRepository.getItemRequestsById(item.getRequestId());
+            itemNew.setItemRequest(itemRequest);
+        }
+
         itemNew = itemRepository.save(itemNew);
 
         return itemNew;

@@ -10,7 +10,6 @@ import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.user.dto.UserPatchDto;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.Map;
 
 @Service
 public class UserClient extends BaseClient {

@@ -17,7 +17,6 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequestMapping(path = "/users")
-@Validated
 public class UserController {
 
     @Autowired
@@ -42,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@Validated(value = {Create.class, Update.class}) @RequestBody User user) throws ParseException {
+    public User create( @RequestBody User user) throws ParseException {
         log.info(String.format("create user started - %s", String.valueOf(user)));
         User userNew = userService.create(user);
         log.info(String.format("create user finished - %s", userNew.toString()));
@@ -50,7 +49,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User update(@Validated({Create.class, Update.class}) @RequestBody User user) throws ParseException {
+    public User update(@RequestBody User user) throws ParseException {
         log.info(String.format("update user started - %s", String.valueOf(user)));
         User userNew = userService.update(user);
         log.info(String.format("update user finished - %s", String.valueOf(userNew)));
@@ -58,7 +57,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public User updatePatch(@Validated({Create.class, Update.class}) @RequestBody UserPatchDto user, @PathVariable long id) throws ParseException {
+    public User updatePatch(@RequestBody UserPatchDto user, @PathVariable long id) throws ParseException {
         log.info(String.format("update user started - %s", String.valueOf(user)));
         User userNew = userService.updatePatch(user, id);
         User user1 = new User();

@@ -17,7 +17,6 @@ import java.util.Collection;
 @Slf4j
 @RestController
 @RequestMapping(path = "/requests")
-@Validated
 public class ItemRequestController {
     public static final String SHARER_USER_ID_HEADER = "X-Sharer-User-Id";
     @Autowired

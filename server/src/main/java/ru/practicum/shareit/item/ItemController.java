@@ -17,7 +17,7 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequestMapping("/items")
-@Validated
+
 public class ItemController {
     public static final String SHARER_USER_ID_HEADER = "X-Sharer-User-Id";
     @Autowired
@@ -53,7 +53,7 @@ public class ItemController {
     }
 
     @PostMapping
-    Item create(@RequestHeader(SHARER_USER_ID_HEADER) long userId, @Validated({Create.class}) @RequestBody ItemCreateDto item) throws ParseException {
+    Item create(@RequestHeader(SHARER_USER_ID_HEADER) long userId, @RequestBody ItemCreateDto item) throws ParseException {
         log.info(String.format("create started - %s", String.valueOf(item)));
         item.setUserId(userId);
         Item itemNew = itemService.create(item);

@@ -37,11 +37,11 @@ public class UserClient extends BaseClient {
     }
 
     public ResponseEntity<Object> update(User user) {
-        return put("", 0L, user); // 0L как заглушка для userId
+        return put("", 0L, user);
     }
 
     public ResponseEntity<Object> updatePatch(UserPatchDto user, long id) {
-        return patch("/" + id, 0L, user); // 0L как заглушка для userId
+        return patch("/" + id, 0L, user);
     }
 
     public ResponseEntity<Object> remove(long id) {

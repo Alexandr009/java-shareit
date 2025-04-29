@@ -63,7 +63,7 @@ public class BookingController {
 
     @PatchMapping("/{id}")
     Booking update(@RequestHeader(SHARER_USER_ID_HEADER) long userId, @PathVariable int id, @RequestParam(required = false) boolean approved) {
-        log.info(String.format("update started - userId %s, bookingId %s", String.valueOf(userId), String.valueOf(id))); //, String.valueOf(approved));
+        log.info(String.format("update started - userId %s, bookingId %s", String.valueOf(userId), String.valueOf(id)));
         Booking booking = bookinService.update(id, userId, approved);
         return booking;
     }

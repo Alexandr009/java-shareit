@@ -21,7 +21,7 @@ class ItemRequestMapperTest {
 
     @Test
     void toDto_shouldMapItemRequestToDtoWithItems() {
-        // given
+
         User requestor = new User();
         requestor.setId(1);
         requestor.setName("John Doe");
@@ -44,10 +44,8 @@ class ItemRequestMapperTest {
 
         List<Item> items = List.of(item);
 
-        // when
         itemRequestInfoDto dto = mapper.toDto(itemRequest, items);
 
-        // then
         assertNotNull(dto);
         assertEquals(1, dto.getId());
         assertEquals("Need a drill", dto.getDescription());
@@ -59,7 +57,7 @@ class ItemRequestMapperTest {
 
     @Test
     void toDto_shouldMapItemRequestToDtoWithEmptyItems() {
-        // given
+
         User requestor = new User();
         requestor.setId(1);
         requestor.setName("John Doe");
@@ -72,10 +70,8 @@ class ItemRequestMapperTest {
         itemRequest.setCreated(createdDate);
         itemRequest.setRequestor(requestor);
 
-        // when
         itemRequestInfoDto dto = mapper.toDto(itemRequest, Collections.emptyList());
 
-        // then
         assertNotNull(dto);
         assertEquals(1, dto.getId());
         assertEquals("Need a drill", dto.getDescription());
@@ -86,7 +82,6 @@ class ItemRequestMapperTest {
 
     @Test
     void toDto_shouldHandleNullItems() {
-        // given
         User requestor = new User();
         requestor.setId(1);
         requestor.setName("John Doe");
@@ -99,10 +94,8 @@ class ItemRequestMapperTest {
         itemRequest.setCreated(createdDate);
         itemRequest.setRequestor(requestor);
 
-        // when
         itemRequestInfoDto dto = mapper.toDto(itemRequest, null);
 
-        // then
         assertNotNull(dto);
         assertEquals(1, dto.getId());
         assertEquals("Need a drill", dto.getDescription());

@@ -50,13 +50,10 @@ class UserServiceTest {
 
     @Test
     void findAll_shouldReturnAllUsers() {
-        // given
         when(userRepository.findAll()).thenReturn(List.of(user));
 
-        // when
         Collection<User> result = userService.findAll();
 
-        // then
         assertThat(result, hasSize(1));
         assertThat(result.iterator().next(), equalTo(user));
         verify(userRepository, times(1)).findAll();
@@ -64,13 +61,10 @@ class UserServiceTest {
 
     @Test
     void getUserById_shouldReturnUserWhenExists() {
-        // given
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        // when
         Optional<User> result = userService.getUserById(1);
 
-        // then
         assertTrue(result.isPresent());
         assertThat(result.get(), equalTo(user));
         verify(userRepository, times(1)).findById(1L);
@@ -78,27 +72,21 @@ class UserServiceTest {
 
     @Test
     void getUserById_shouldReturnEmptyWhenNotExists() {
-        // given
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // when
         Optional<User> result = userService.getUserById(999L);
 
-        // then
         assertFalse(result.isPresent());
         verify(userRepository, times(1)).findById(999L);
     }
 
     @Test
     void create_shouldSaveNewUser() throws ParseException {
-        // given
         when(userRepository.findAll()).thenReturn(List.of());
         when(userRepository.save(user)).thenReturn(user);
 
-        // when
         User result = userService.create(user);
 
-        // then
         assertThat(result, equalTo(user));
         verify(userRepository, times(1)).save(user);
     }
@@ -114,7 +102,6 @@ class UserServiceTest {
 
     @Test
     void updatePatch_shouldUpdateUserFields() throws ParseException {
-        // given
         User existingUser = new User();
         existingUser.setId(1);
         existingUser.setName("Old Name");
@@ -124,10 +111,8 @@ class UserServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
         when(userRepository.save(existingUser)).thenReturn(existingUser);
 
-        // when
         User result = userService.updatePatch(userPatchDto, 1);
 
-        // then
         assertThat(result.getName(), equalTo("John Updated"));
         assertThat(result.getEmail(), equalTo("updated@mail.com"));
         verify(userRepository, times(1)).save(existingUser);
@@ -135,24 +120,19 @@ class UserServiceTest {
 
     @Test
     void updatePatch_shouldThrowWhenUserNotFound() {
-        // given
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // when & then
         assertThrows(NotFoundException.class, () -> userService.updatePatch(userPatchDto, 999L));
         verify(userRepository, never()).save(any());
     }
 
     @Test
     void update_shouldUpdateUser() throws ParseException {
-        // given
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(user)).thenReturn(user);
 
-        // when
         User result = userService.update(user);
 
-        // then
         assertThat(result, equalTo(user));
         verify(userRepository, times(1)).save(user);
     }
@@ -168,13 +148,10 @@ class UserServiceTest {
 
     @Test
     void remove_shouldDeleteUser() {
-        // given
         doNothing().when(userRepository).deleteById(1L);
 
-        // when
         userService.remove(1L);
 
-        // then
         verify(userRepository, times(1)).deleteById(1L);
     }
 }

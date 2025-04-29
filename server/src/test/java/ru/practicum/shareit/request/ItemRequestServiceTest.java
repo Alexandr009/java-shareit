@@ -86,14 +86,11 @@ class ItemRequestServiceTest {
 
     @Test
     void createItemRequest_shouldCreateRequestWhenUserExists() {
-        // given
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(itemRequestRepository.save(any())).thenReturn(itemRequest);
 
-        // when
         ItemRequest result = itemRequestService.createItemRequest(itemRequestDto);
 
-        // then
         assertThat(result, equalTo(itemRequest));
         verify(userRepository, times(1)).findById(1L);
         verify(itemRequestRepository, times(1)).save(any());
@@ -101,10 +98,8 @@ class ItemRequestServiceTest {
 
     @Test
     void createItemRequest_shouldThrowWhenUserNotExists() {
-        // given
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // when & then
         itemRequestDto.setRequestorId(999);
         assertThrows(NotFoundException.class, () -> itemRequestService.createItemRequest(itemRequestDto));
         verify(userRepository, times(1)).findById(999L);
@@ -113,14 +108,11 @@ class ItemRequestServiceTest {
 
     @Test
     void getItemRequests_shouldReturnUserRequests() {
-        // given
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(itemRequestRepository.getItemRequestsByRequestor_Id(1)).thenReturn(List.of(itemRequest));
 
-        // when
         Collection<ItemRequest> result = itemRequestService.getItemRequests(1L);
 
-        // then
         assertThat(result, hasSize(1));
         assertThat(result.iterator().next(), equalTo(itemRequest));
         verify(userRepository, times(1)).findById(1L);
@@ -129,10 +121,8 @@ class ItemRequestServiceTest {
 
     @Test
     void getItemRequests_shouldThrowWhenUserNotExists() {
-        // given
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // when & then
         assertThrows(NotFoundException.class, () -> itemRequestService.getItemRequests(999L));
         verify(userRepository, times(1)).findById(999L);
         verify(itemRequestRepository, never()).getItemRequestsByRequestor_Id(anyInt());
@@ -140,16 +130,13 @@ class ItemRequestServiceTest {
 
     @Test
     void getItemRequestId_shouldReturnRequestWithItems() {
-        // given
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(itemRequestRepository.findById(1L)).thenReturn(Optional.of(itemRequest));
         when(itemRepository.findAllByItemRequest_Id(1)).thenReturn(List.of(item));
         when(itemRequestMapper.toDto(itemRequest, List.of(item))).thenReturn(itemRequestInfoDto);
 
-        // when
         itemRequestInfoDto result = itemRequestService.getItemRequestId(1L, 1L);
 
-        // then
         assertThat(result, equalTo(itemRequestInfoDto));
         verify(userRepository, times(1)).findById(1L);
         verify(itemRequestRepository, times(1)).findById(1L);
@@ -159,10 +146,8 @@ class ItemRequestServiceTest {
 
     @Test
     void getItemRequestId_shouldThrowWhenUserNotExists() {
-        // given
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // when & then
         assertThrows(NotFoundException.class, () -> itemRequestService.getItemRequestId(1L, 999L));
         verify(userRepository, times(1)).findById(999L);
         verify(itemRequestRepository, never()).findById(anyLong());
@@ -170,11 +155,9 @@ class ItemRequestServiceTest {
 
     @Test
     void getItemRequestId_shouldThrowWhenRequestNotExists() {
-        // given
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(itemRequestRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // when & then
         assertThrows(NotFoundException.class, () -> itemRequestService.getItemRequestId(999L, 1L));
         verify(userRepository, times(1)).findById(1L);
         verify(itemRequestRepository, times(1)).findById(999L);
@@ -183,13 +166,10 @@ class ItemRequestServiceTest {
 
     @Test
     void getCollectionItemRequest_shouldReturnAllRequestsOrderedByDate() {
-        // given
         when(itemRequestRepository.findAllItemRequestsOrderByDateDesc()).thenReturn(List.of(itemRequest));
 
-        // when
         Collection<ItemRequest> result = itemRequestService.getCollectionItemRequest();
 
-        // then
         assertThat(result, hasSize(1));
         assertThat(result.iterator().next(), equalTo(itemRequest));
         verify(itemRequestRepository, times(1)).findAllItemRequestsOrderByDateDesc();

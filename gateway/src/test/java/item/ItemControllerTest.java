@@ -116,16 +116,16 @@ class ItemControllerTest {
     @Test
     void getItemById_shouldCallClient() throws Exception {
         when(itemClient.getItemById(anyLong(), anyLong()))
-                .thenReturn(new ResponseEntity<>(item, HttpStatus.OK)); // Return a valid item
+                .thenReturn(new ResponseEntity<>(item, HttpStatus.OK));
 
         mvc.perform(get("/items/1")
                         .header(ItemController.SHARER_USER_ID_HEADER, 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON)) // Check for JSON content type
-                .andExpect(jsonPath("$.id").value(1)) // Check if the returned item has id 1
-                .andExpect(jsonPath("$.name").value("Drill")); // Check if the returned item has name "Drill"
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Drill"));
 
         verify(itemClient, times(1)).getItemById(1L, 1L);
     }
@@ -200,12 +200,10 @@ class ItemControllerTest {
 
     @Test
     void createComment_shouldCallClient() throws Exception {
-        // Create a mock comment object to return
         Comment mockComment = new Comment();
         mockComment.setId(1);
         mockComment.setText("Great drill!");
 
-        // Mock the itemClient's createComment method to return the mock comment
         when(itemClient.createComment(anyLong(), anyLong(), any(CommentCreateDto.class)))
                 .thenReturn(new ResponseEntity<>(mockComment, HttpStatus.OK));
 
@@ -216,9 +214,9 @@ class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON)) // Check for JSON content type
-                .andExpect(jsonPath("$.id").value(1)) // Check if the returned comment has id 1
-                .andExpect(jsonPath("$.text").value("Great drill!")); // Check if the returned comment has text "Great drill!"
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.text").value("Great drill!"));
 
         verify(itemClient, times(1)).createComment(eq(1L), eq(1L), any(CommentCreateDto.class));
     }

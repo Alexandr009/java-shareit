@@ -13,6 +13,4 @@ public class Item {
     String description;
     Boolean available;
     User owner;
-
-    //ItemRequest itemRequest;
 }

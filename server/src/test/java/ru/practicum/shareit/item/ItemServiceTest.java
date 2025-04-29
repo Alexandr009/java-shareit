@@ -140,7 +140,6 @@ class ItemServiceTest {
     void findAllByUserId_shouldThrowWhenUserNotFound() {
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // when & then
         assertThrows(NotFoundException.class, () -> itemService.findAllByUserId(999L));
         verify(userRepository, times(1)).findById(999L);
         verify(itemRepository, never()).findByOwner(any());

@@ -144,18 +144,6 @@ class UserControllerTest {
         verify(userClient, times(1)).updatePatch(any(), eq(1L));
     }
 
-//    @Test
-//    void remove_shouldDeleteUser() throws Exception {
-//        doNothing().when(userClient).remove(anyLong());
-//
-//        mvc.perform(delete("/users/1")
-//                        .characterEncoding(StandardCharsets.UTF_8)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk());
-//
-//        verify(userClient, times(1)).remove(1L);
-//    }
-
     @Test
     void getUserById_whenUserNotFound_shouldReturnNotFound() throws Exception {
         when(userClient.getUserById(anyLong()))

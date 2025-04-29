@@ -29,7 +29,6 @@ class ItemMapperTest {
 
     @Test
     void toCommentDto_shouldMapCommentToDto() {
-        // Given
         User author = new User();
         author.setId(1);
         author.setName("John Doe");
@@ -47,10 +46,8 @@ class ItemMapperTest {
         comment.setAuthor(author);
         comment.setItem(item);
 
-        // When
         CommentInfoDto result = itemMapper.toCommentDto(comment);
 
-        // Then
         assertNotNull(result);
         assertEquals(comment.getId(), result.getId());
         assertEquals(comment.getText(), result.getText());
@@ -74,10 +71,8 @@ class ItemMapperTest {
         comment.setCreated(createdDate);
         comment.setAuthor(null);
 
-        // When
         CommentInfoDto result = itemMapper.toCommentDto(comment);
 
-        // Then
         assertNotNull(result);
         assertNull(result.getAuthorName());
     }
@@ -89,7 +84,6 @@ class ItemMapperTest {
 
     @Test
     void toItemDto_shouldMapItemWithoutBookings() {
-        // Given
         Item item = new Item();
         item.setId(1);
         item.setName("Drill");
@@ -100,10 +94,8 @@ class ItemMapperTest {
         owner.setId(1);
         item.setOwner(owner);
 
-        // When
         ItemDto result = itemMapper.toItemDto(item, List.of(), null, null, 1L);
 
-        // Then
         assertNotNull(result);
         assertEquals(item.getId(), result.getId());
         assertEquals(item.getName(), result.getName());
@@ -117,14 +109,11 @@ class ItemMapperTest {
 
     @Test
     void toItemDto_shouldHandleNullComments() {
-        // Given
         Item item = new Item();
         item.setId(1);
 
-        // When
         ItemDto result = itemMapper.toItemDto(item, null, null, null, 1L);
 
-        // Then
         assertNotNull(result);
         assertNotNull(result.getComments());
         assertTrue(result.getComments().isEmpty());

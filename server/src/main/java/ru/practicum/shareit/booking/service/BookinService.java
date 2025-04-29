@@ -60,7 +60,7 @@ public class BookinService {
                 throw new ValidationException(String.format("Access denied for userId = %s",userId.intValue()));
             }
         }
-        if (booking.isPresent()) {
+        if (!booking.isEmpty()) {
             return booking.get();
         } else {
             throw new NotFoundException(String.format("BookingId: id not found", id.intValue()));
@@ -70,8 +70,8 @@ public class BookinService {
 
     public Collection<Booking> findAllByUserId(long userId, String status) {
         Optional<User> user = userRepository.findById(userId);
-        if (!user.isPresent()) {
-            throw new NotFoundException(String.format("User with id = %s not found", user.get().getId()));
+        if (user.isEmpty()) {
+            throw new NotFoundException(String.format("User with id = %s not found", userId));
         }
         return bookinRepository.findByBookerId((int) userId);
     }

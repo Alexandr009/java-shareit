@@ -18,7 +18,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 @Validated
 public class BookingController {
 	private final BookingClient bookingClient;
-	private static final String SHARER_USER_ID_HEADER = "X-Sharer-User-Id";
+	public static final String SHARER_USER_ID_HEADER = "X-Sharer-User-Id";
 
 	@GetMapping
 	public ResponseEntity<Object> findAll(

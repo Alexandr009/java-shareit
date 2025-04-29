@@ -53,7 +53,7 @@ public class ItemMapper {
         itemDto.setUser(item.getOwner());
         itemDto.setComments(comments != null ? comments : List.of());
 
-        if (lastBooking != null && lastBooking.getItem() != null && item.getId().equals(lastBooking.getItem().getId())) {
+        if (lastBooking != null && lastBooking.getItem() != null && !item.getId().equals(lastBooking.getItem().getId())) {
             BookingCreateDto lastBookingDto = new BookingCreateDto();
             lastBookingDto.setId(lastBooking.getId());
             lastBookingDto.setStart(lastBooking.getStart());
@@ -64,7 +64,7 @@ public class ItemMapper {
             itemDto.setLastBooking(null);
         }
 
-        if (nextBooking != null && nextBooking.getItem() != null && item.getId().equals(nextBooking.getItem().getId())) {
+        if (nextBooking != null && nextBooking.getItem() != null && !item.getId().equals(nextBooking.getItem().getId())) {
             BookingCreateDto nextBookingDto = new BookingCreateDto();
             nextBookingDto.setId(nextBooking.getId());
             nextBookingDto.setStart(nextBooking.getStart());

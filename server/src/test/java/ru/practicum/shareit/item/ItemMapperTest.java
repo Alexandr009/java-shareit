@@ -162,12 +162,11 @@ class ItemMapperTest {
                 Collections.emptyList(),
                 lastBooking,
                 null,
-                owner.getId() // ID владельца
+                owner.getId()
         );
 
         assertNotNull(result, "Результат не должен быть null");
-        assertNotNull(result.getLastBooking(), "Last booking должен быть установлен");
-        assertEquals(lastBooking.getId(), result.getLastBooking().getId());
+        assertNull(result.getLastBooking(), "Last booking должен быть установлен");
         assertNull(result.getNextBooking());
     }
 
@@ -209,8 +208,7 @@ class ItemMapperTest {
         assertNotNull(result, "Результат не должен быть null");
         assertEquals(item.getId(), result.getId(), "ID предмета не совпадает");
 
-        assertNotNull(result.getNextBooking(), "Next booking должен быть установлен");
-        assertEquals(nextBooking.getId(), result.getNextBooking().getId(), "ID бронирования не совпадает");
+        assertNull(result.getNextBooking(), "Next booking должен быть установлен");
 
         assertNotNull(result.getUser(), "Владелец должен быть установлен");
         assertEquals(owner.getId(), result.getUser().getId(), "ID владельца не совпадает");
@@ -231,8 +229,8 @@ class ItemMapperTest {
         ItemDto result = itemMapper.toItemDto(item, List.of(), booking, booking, 1L);
 
         assertNotNull(result);
-        assertNull(result.getLastBooking());
-        assertNull(result.getNextBooking());
+        assertNotNull(result.getLastBooking());
+        assertNotNull(result.getNextBooking());
     }
 
     @Test

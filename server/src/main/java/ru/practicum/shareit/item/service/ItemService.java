@@ -48,7 +48,10 @@ public class ItemService {
 
     public Collection<Item> findAllByUserId(long userId) {
         Optional<User> user = userRepository.findById(userId);
-        return itemRepository.findByOwner(user.orElse(null));
+        if (user.isEmpty()) {
+            throw new NotFoundException(String.format("User with id = %s not found", userId));
+        }
+        return itemRepository.findByOwner(user.get());
     }
 
     public ItemDto findItemByIdAndUserId(long id, long userId) {

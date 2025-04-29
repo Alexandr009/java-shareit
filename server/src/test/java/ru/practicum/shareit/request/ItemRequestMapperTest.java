@@ -2,7 +2,7 @@ package ru.practicum.shareit.request;
 
 import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.dto.itemRequestInfoDto;
+import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
@@ -44,7 +44,7 @@ class ItemRequestMapperTest {
 
         List<Item> items = List.of(item);
 
-        itemRequestInfoDto dto = mapper.toDto(itemRequest, items);
+        ItemRequestInfoDto dto = mapper.toDto(itemRequest, items);
 
         assertNotNull(dto);
         assertEquals(1, dto.getId());
@@ -70,7 +70,7 @@ class ItemRequestMapperTest {
         itemRequest.setCreated(createdDate);
         itemRequest.setRequestor(requestor);
 
-        itemRequestInfoDto dto = mapper.toDto(itemRequest, Collections.emptyList());
+        ItemRequestInfoDto dto = mapper.toDto(itemRequest, Collections.emptyList());
 
         assertNotNull(dto);
         assertEquals(1, dto.getId());
@@ -94,7 +94,7 @@ class ItemRequestMapperTest {
         itemRequest.setCreated(createdDate);
         itemRequest.setRequestor(requestor);
 
-        itemRequestInfoDto dto = mapper.toDto(itemRequest, null);
+        ItemRequestInfoDto dto = mapper.toDto(itemRequest, null);
 
         assertNotNull(dto);
         assertEquals(1, dto.getId());

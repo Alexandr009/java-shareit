@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Date;
 
 @Data
-public class itemRequestInfoDto {
+public class ItemRequestInfoDto {
     Integer id;
     String description;
     User requestor;

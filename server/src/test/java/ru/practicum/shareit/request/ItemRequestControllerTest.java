@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.dto.itemRequestInfoDto;
+import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
@@ -38,7 +38,7 @@ class ItemRequestControllerTest {
     private MockMvc mvc;
     private ItemRequest itemRequest;
     private ItemRequestDto itemRequestDto;
-    private itemRequestInfoDto itemRequestInfo;
+    private ItemRequestInfoDto itemRequestInfo;
 
     @BeforeEach
     void setUp() {
@@ -53,7 +53,7 @@ class ItemRequestControllerTest {
         itemRequestDto = new ItemRequestDto();
         itemRequestDto.setDescription("Need a drill");
 
-        itemRequestInfo = new itemRequestInfoDto();
+        itemRequestInfo = new ItemRequestInfoDto();
         itemRequestInfo.setId(1);
         itemRequestInfo.setDescription("Need a drill");
     }

@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.dto.itemRequestInfoDto;
+import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
@@ -40,9 +40,9 @@ public class ItemRequestController {
     }
 
     @GetMapping("/{id}")
-    public itemRequestInfoDto getItemRequestId(@PathVariable long id, @RequestHeader(SHARER_USER_ID_HEADER) long userId) {
+    public ItemRequestInfoDto getItemRequestId(@PathVariable long id, @RequestHeader(SHARER_USER_ID_HEADER) long userId) {
         log.info("getItemRequest - %s", id);
-        itemRequestInfoDto itemRequest = itemRequestService.getItemRequestId(id, userId);
+        ItemRequestInfoDto itemRequest = itemRequestService.getItemRequestId(id, userId);
         log.info("getItemRequest - %s", itemRequest);
         return itemRequest;
     }

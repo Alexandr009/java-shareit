@@ -10,7 +10,7 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.dto.itemRequestInfoDto;
+import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.service.ItemRequestService;
@@ -50,7 +50,7 @@ class ItemRequestServiceTest {
     private User user;
     private ItemRequestDto itemRequestDto;
     private ItemRequest itemRequest;
-    private itemRequestInfoDto itemRequestInfoDto;
+    private ItemRequestInfoDto itemRequestInfoDto;
     private Item item;
 
     @BeforeEach
@@ -78,7 +78,7 @@ class ItemRequestServiceTest {
         item.setOwner(user);
         item.setItemRequest(itemRequest);
 
-        itemRequestInfoDto = new itemRequestInfoDto();
+        itemRequestInfoDto = new ItemRequestInfoDto();
         itemRequestInfoDto.setId(1);
         itemRequestInfoDto.setDescription("Need a drill");
         itemRequestInfoDto.setCreated(itemRequest.getCreated());
@@ -135,7 +135,7 @@ class ItemRequestServiceTest {
         when(itemRepository.findAllByItemRequest_Id(1)).thenReturn(List.of(item));
         when(itemRequestMapper.toDto(itemRequest, List.of(item))).thenReturn(itemRequestInfoDto);
 
-        itemRequestInfoDto result = itemRequestService.getItemRequestId(1L, 1L);
+        ItemRequestInfoDto result = itemRequestService.getItemRequestId(1L, 1L);
 
         assertThat(result, equalTo(itemRequestInfoDto));
         verify(userRepository, times(1)).findById(1L);

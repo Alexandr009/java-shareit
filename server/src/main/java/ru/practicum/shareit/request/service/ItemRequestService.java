@@ -6,7 +6,7 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.dto.itemRequestInfoDto;
+import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.storage.ItemRequestRepository;
@@ -55,7 +55,7 @@ public class ItemRequestService {
         return itemRequestRepository.getItemRequestsByRequestor_Id((int) userId);
     }
 
-    public itemRequestInfoDto getItemRequestId(long requestId, long userId) {
+    public ItemRequestInfoDto getItemRequestId(long requestId, long userId) {
         Optional<User> user = userRepository.findById(Long.valueOf(userId));
         if (user.isEmpty()) {
             throw new NotFoundException(String.format("User with id = %s not found", userId));
@@ -64,7 +64,7 @@ public class ItemRequestService {
                 .orElseThrow(() -> new NotFoundException(String.format("itemRequest with id = %s not found", requestId)));
 
         Collection<Item> items = itemRepository.findAllByItemRequest_Id(itemRequest.getId());
-        itemRequestInfoDto itemRequestInfoDto = itemRequestMapper.toDto(itemRequest, items);
+        ItemRequestInfoDto itemRequestInfoDto = itemRequestMapper.toDto(itemRequest, items);
         return itemRequestInfoDto;
     }
 

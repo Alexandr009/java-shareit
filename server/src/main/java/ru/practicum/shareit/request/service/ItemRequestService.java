@@ -33,6 +33,7 @@ public class ItemRequestService {
         this.itemRepository = itemRepository;
         this.itemRequestMapper = itemRequestMapper;
     }
+
     public ItemRequest createItemRequest(ItemRequestDto itemRequestDto) {
         Optional<User> user = userRepository.findById(Long.valueOf(itemRequestDto.getRequestorId()));
         if (user.isEmpty()) {
@@ -63,11 +64,11 @@ public class ItemRequestService {
                 .orElseThrow(() -> new NotFoundException(String.format("itemRequest with id = %s not found", requestId)));
 
         Collection<Item> items = itemRepository.findAllByItemRequest_Id(itemRequest.getId());
-        itemRequestInfoDto itemRequestInfoDto = itemRequestMapper.toDto(itemRequest,items);
+        itemRequestInfoDto itemRequestInfoDto = itemRequestMapper.toDto(itemRequest, items);
         return itemRequestInfoDto;
     }
 
-    public Collection<ItemRequest> getCollectionItemRequest(){
+    public Collection<ItemRequest> getCollectionItemRequest() {
         return itemRequestRepository.findAllItemRequestsOrderByDateDesc();
     }
 }

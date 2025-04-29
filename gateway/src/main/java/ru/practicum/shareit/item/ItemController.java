@@ -5,11 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.*;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.dto.CommentCreateDto;
+import ru.practicum.shareit.item.dto.Create;
+import ru.practicum.shareit.item.dto.ItemCreateDto;
+import ru.practicum.shareit.item.dto.ItemPatchDto;
 
 import java.text.ParseException;
-import java.util.Collection;
 
 @RestController
 @RequestMapping("/items")
@@ -17,8 +18,8 @@ import java.util.Collection;
 @Slf4j
 @Validated
 public class ItemController {
-    private final ItemClient itemClient;
     public static final String SHARER_USER_ID_HEADER = "X-Sharer-User-Id";
+    private final ItemClient itemClient;
 
     @GetMapping
     public ResponseEntity<Object> findAll(@RequestHeader(SHARER_USER_ID_HEADER) long userId) {

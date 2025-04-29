@@ -14,7 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.item.ItemClient;
 import ru.practicum.shareit.item.ItemController;
-import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.dto.CommentCreateDto;
+import ru.practicum.shareit.item.dto.ItemCreateDto;
+import ru.practicum.shareit.item.dto.ItemPatchDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
@@ -23,19 +25,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.*;
-        import static org.mockito.Mockito.*;
-        import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-        import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemControllerTest {
+    private final ObjectMapper mapper = new ObjectMapper();
     @Mock
     private ItemClient itemClient;
-
     @InjectMocks
     private ItemController controller;
-
-    private final ObjectMapper mapper = new ObjectMapper();
     private MockMvc mvc;
     private ItemCreateDto itemCreateDto;
     private ItemPatchDto itemPatchDto;

@@ -2,7 +2,6 @@ package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Item;
@@ -38,7 +37,7 @@ public class ItemController {
 
     @GetMapping("/search")
     public Collection<Item> searchItem(@RequestHeader(SHARER_USER_ID_HEADER) long userId, @RequestParam(value = "text") String searchText) {
-        log.info("Searching for %s in %s",searchText, userId);
+        log.info("Searching for %s in %s", searchText, userId);
         if (searchText.isEmpty() || searchText.equals("")) {
             return Collections.emptyList();
         }

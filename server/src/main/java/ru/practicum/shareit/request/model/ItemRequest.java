@@ -18,11 +18,11 @@ import java.util.Date;
 @Table(name = "requests")
 public class ItemRequest {
     @Id
-            @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String description;
     @ManyToOne(fetch = FetchType.EAGER)
-            @JoinColumn(name = "requestor_id")
+    @JoinColumn(name = "requestor_id")
     User requestor;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

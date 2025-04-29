@@ -18,21 +18,21 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
+    private final ObjectMapper mapper = new ObjectMapper();
     @Mock
     private UserService userService;
-
     @InjectMocks
     private UserController controller;
-
-    private final ObjectMapper mapper = new ObjectMapper();
     private MockMvc mvc;
     private User user;
     private UserPatchDto userPatchDto;

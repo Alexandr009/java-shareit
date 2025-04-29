@@ -18,21 +18,23 @@ import ru.practicum.shareit.request.service.ItemRequestService;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
-import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class ItemRequestControllerTest {
+    private final ObjectMapper mapper = new ObjectMapper();
     @Mock
     private ItemRequestService itemRequestService;
-
     @InjectMocks
     private ItemRequestController controller;
-
-    private final ObjectMapper mapper = new ObjectMapper();
     private MockMvc mvc;
     private ItemRequest itemRequest;
     private ItemRequestDto itemRequestDto;

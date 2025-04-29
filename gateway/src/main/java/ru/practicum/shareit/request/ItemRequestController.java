@@ -15,8 +15,8 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @Validated
 public class ItemRequestController {
-    private final ItemRequestClient itemRequestClient;
     public static final String SHARER_USER_ID_HEADER = "X-Sharer-User-Id";
+    private final ItemRequestClient itemRequestClient;
 
     @PostMapping
     public ResponseEntity<Object> createItemRequest(

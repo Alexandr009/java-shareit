@@ -18,7 +18,7 @@ public class ItemRequestController {
     @Autowired
     private ItemRequestService itemRequestService;
 
-    public ItemRequestController (ItemRequestService itemRequestService) {
+    public ItemRequestController(ItemRequestService itemRequestService) {
         this.itemRequestService = itemRequestService;
     }
 

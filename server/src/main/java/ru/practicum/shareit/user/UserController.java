@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User create( @RequestBody User user) throws ParseException {
+    public User create(@RequestBody User user) throws ParseException {
         log.info(String.format("create user started - %s", String.valueOf(user)));
         User userNew = userService.create(user);
         log.info(String.format("create user finished - %s", userNew.toString()));

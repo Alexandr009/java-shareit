@@ -122,7 +122,7 @@ public class ItemService {
         }
         Item currentItem = existingItem.get();
         if (item.getUserId() != (int) currentItem.getOwner().getId()) {
-            throw new NotFoundException(String.format("User id: %s wrong",item.getUserId().intValue()));
+            throw new NotFoundException(String.format("User id: %s wrong", item.getUserId().intValue()));
         }
 
         Item itemNew = new Item();
@@ -140,7 +140,7 @@ public class ItemService {
                         String.format("Item with id = %d not found", item.getId())));
 
         if (!item.getUserId().equals(Long.valueOf(existingItem.getOwner().getId()))) {
-            throw new NotFoundException(String.format("UserId: %d is not the owner of this itemId: %d",item.getUserId().intValue(),item.getId()));
+            throw new NotFoundException(String.format("UserId: %d is not the owner of this itemId: %d", item.getUserId().intValue(), item.getId()));
         }
         if (item.getName() != null && !item.getName().isBlank()) {
             existingItem.setName(item.getName());
@@ -157,16 +157,16 @@ public class ItemService {
 
     public CommentInfoDto createComment(CommentCreateDto commentDto, long itemId, long userId) {
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException(String.format("ItemId: %s not found",itemId)));
+                .orElseThrow(() -> new NotFoundException(String.format("ItemId: %s not found", itemId)));
 
         User author = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(String.format("UserId: %s not found",userId)));
+                .orElseThrow(() -> new NotFoundException(String.format("UserId: %s not found", userId)));
 
         Date currentDate = new Date();
 
         List<Booking> userBookings = bookinRepository.findByBookerIdAndItemId(userId, itemId);
         if (userBookings.isEmpty()) {
-            throw new ValidationException(String.format("UserId: %s never booked itemId: %s",userId,itemId));
+            throw new ValidationException(String.format("UserId: %s never booked itemId: %s", userId, itemId));
         }
 
         boolean canComment = userBookings.stream()
@@ -179,7 +179,7 @@ public class ItemService {
                 canComment, userBookings.get(0).getEnd(), currentDate);
 
         if (!canComment) {
-            throw new ValidationException(String.format("BookingId: %s not ended yet",userBookings.getFirst().getId()));
+            throw new ValidationException(String.format("BookingId: %s not ended yet", userBookings.getFirst().getId()));
         }
 
         Comment comment = new Comment();

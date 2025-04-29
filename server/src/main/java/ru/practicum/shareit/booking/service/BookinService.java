@@ -3,14 +3,14 @@ package ru.practicum.shareit.booking.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.storage.BookinRepository;
-import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.storage.BookinRepository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -57,7 +57,7 @@ public class BookinService {
         Optional<Booking> booking = bookinRepository.findById(id);
         if (booking.get().getBooker().getId().intValue() != userId.intValue()) {
             if (booking.get().getItem().getOwner().getId().intValue() != userId.intValue()) {
-                throw new ValidationException(String.format("Access denied for userId = %s",userId.intValue()));
+                throw new ValidationException(String.format("Access denied for userId = %s", userId.intValue()));
             }
         }
         if (!booking.isEmpty()) {

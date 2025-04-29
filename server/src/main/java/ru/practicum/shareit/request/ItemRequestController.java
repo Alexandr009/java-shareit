@@ -26,9 +26,9 @@ public class ItemRequestController {
     public ItemRequest createItemRequest(@RequestBody ItemRequestDto itemRequestDto, @RequestHeader(SHARER_USER_ID_HEADER) long userId) {
         log.info("create ItemRequest - %s, userId - %s", itemRequestDto, userId);
         itemRequestDto.setRequestorId((int) userId);
-        ItemRequest ItemNew = itemRequestService.createItemRequest(itemRequestDto);
-        log.info("created ItemRequest - %s", ItemNew);
-        return ItemNew;
+        ItemRequest itemNew = itemRequestService.createItemRequest(itemRequestDto);
+        log.info("created ItemRequest - %s", itemNew);
+        return itemNew;
     }
 
     @GetMapping

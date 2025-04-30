@@ -19,6 +19,8 @@ import java.text.ParseException;
 @Validated
 public class ItemController {
     public static final String SHARER_USER_ID_HEADER = "X-Sharer-User-Id";
+    private static final String ITEM_ID_PATH = "/{id}";
+    private static final String COMMENT_PATH = "/{itemId}/comment";
     private final ItemClient itemClient;
 
     @GetMapping
@@ -35,7 +37,7 @@ public class ItemController {
         return itemClient.searchItem(userId, searchText);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(ITEM_ID_PATH)
     public ResponseEntity<Object> getItemById(
             @PathVariable long id,
             @RequestHeader(SHARER_USER_ID_HEADER) long userId) {
@@ -51,7 +53,7 @@ public class ItemController {
         return itemClient.create(userId, item);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping(ITEM_ID_PATH)
     public ResponseEntity<Object> updatePatch(
             @RequestHeader(SHARER_USER_ID_HEADER) long userId,
             @PathVariable long id,
@@ -67,7 +69,7 @@ public class ItemController {
         return itemClient.update(item);
     }
 
-    @PostMapping("/{itemId}/comment")
+    @PostMapping(COMMENT_PATH)
     public ResponseEntity<Object> createComment(
             @RequestHeader(SHARER_USER_ID_HEADER) long userId,
             @PathVariable long itemId,

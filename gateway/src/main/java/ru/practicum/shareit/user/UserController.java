@@ -18,6 +18,7 @@ import java.text.ParseException;
 @Slf4j
 @Validated
 public class UserController {
+    private static final String USER_ID_PATH = "/{id}";
     private final UserClient userClient;
 
     @GetMapping
@@ -28,7 +29,7 @@ public class UserController {
         return response;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(USER_ID_PATH)
     public ResponseEntity<Object> getUserById(@PathVariable long id) {
         log.info("Request to get user by id: {}", id);
         ResponseEntity<Object> response = userClient.getUserById(id);
@@ -54,7 +55,7 @@ public class UserController {
         return response;
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping(USER_ID_PATH)
     public ResponseEntity<Object> updatePatch(
             @Validated({Create.class, Update.class}) @RequestBody UserPatchDto user,
             @PathVariable long id) throws ParseException {
@@ -64,7 +65,7 @@ public class UserController {
         return response;
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(USER_ID_PATH)
     public ResponseEntity<Object> remove(@PathVariable long id) {
         log.info("Request to delete user with id: {}", id);
         ResponseEntity<Object> response = userClient.remove(id);

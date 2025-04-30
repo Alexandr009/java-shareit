@@ -16,6 +16,8 @@ import java.util.Collection;
 @Validated
 public class ItemRequestController {
     public static final String SHARER_USER_ID_HEADER = "X-Sharer-User-Id";
+    private static final String REQUEST_ID_PATH = "/{id}";
+    private static final String ALL_REQUESTS_PATH = "/all";
     private final ItemRequestClient itemRequestClient;
 
     @PostMapping
@@ -37,7 +39,7 @@ public class ItemRequestController {
         return response;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(REQUEST_ID_PATH)
     public ResponseEntity<Object> getItemRequestById(
             @PathVariable long id,
             @RequestHeader(SHARER_USER_ID_HEADER) long userId) {
@@ -47,7 +49,7 @@ public class ItemRequestController {
         return response;
     }
 
-    @GetMapping("/all")
+    @GetMapping(ALL_REQUESTS_PATH)
     public ResponseEntity<Object> getAllItemRequests(
             @RequestHeader(SHARER_USER_ID_HEADER) long userId) {
         log.info("Getting all item requests for user: {}", userId);
